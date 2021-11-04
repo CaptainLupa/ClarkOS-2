@@ -3,7 +3,7 @@
 using namespace metal;
 
 vertex RastData vertexShader(const VertexIn vIn [[stage_in]],
-                             constant ModelMatracies &modelSex [[buffer(1)]]) {
+                             constant ModelMat &modelSex [[buffer(1)]]) {
     RastData rd;
     
     rd.position = modelSex.modelMatrix * float4(vIn.position, 1.0);

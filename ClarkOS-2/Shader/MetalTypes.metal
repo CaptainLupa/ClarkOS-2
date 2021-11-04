@@ -11,6 +11,6 @@ struct RastData {
     float4 color;
 };
 
-struct ModelMatracies {
+struct ModelMat {
     float4x4 modelMatrix;
 };

@@ -5,6 +5,6 @@ struct Vertex: Measurable {
     var color: float4
 }
 
-struct ModelMatracies: Measurable {
+struct ModelMat: Measurable {
     var modelMatrix = matrix_identity_float4x4
 }
