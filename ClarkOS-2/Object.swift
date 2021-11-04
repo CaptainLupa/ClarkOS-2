@@ -14,15 +14,29 @@ protocol Polygon {
 
 class Object {
     var drawable: ClarkDrawable!
-    private var _position: float3!
-    private var _orientation: quaternion!
-    private var _scale: float3!
+    private var _position: float3 = float3(0.1, 0, 0)
+    private var _orientation: quaternion = quaternion(vector: float4(0, 0, 0, 0))
+    private var _scale: float3 = float3(1, 1, 1)
+    
+    private var modelMatrix = ModelMatracies()
     
     init() {
         
     }
     
+    private func updateMatrix() {
+        modelMatrix.modelMatrix.translate(_position)
+        
+        // TODO: Rotation
+        
+        modelMatrix.modelMatrix.scale(_scale)
+    }
+    
     func draw(_ rce: MTLRenderCommandEncoder) {
+        updateMatrix()
+        
+        rce.setVertexBytes(&modelMatrix, length: ModelMatracies.stride, index: 1)
+        
         self.drawable.render(rce)
     }
 }

@@ -10,3 +10,7 @@ struct RastData {
     float4 position [[position]];
     float4 color;
 };
+
+struct ModelMatracies {
+    float4x4 modelMatrix;
+};

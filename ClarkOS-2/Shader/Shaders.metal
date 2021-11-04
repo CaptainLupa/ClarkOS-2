@@ -2,10 +2,11 @@
 #include "MetalTypes.metal"
 using namespace metal;
 
-vertex RastData vertexShader(const VertexIn vIn [[stage_in]]) {
+vertex RastData vertexShader(const VertexIn vIn [[stage_in]],
+                             constant ModelMatracies &modelSex [[buffer(1)]]) {
     RastData rd;
     
-    rd.position = float4(vIn.position, 1.0);
+    rd.position = modelSex.modelMatrix * float4(vIn.position, 1.0);
     rd.color = vIn.color;
     
     return rd;
