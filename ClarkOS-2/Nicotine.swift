@@ -11,8 +11,6 @@ class Nicotine {
         self.DefLib = dev.makeDefaultLibrary()
         
         Metal.Grind()
-        
-        Mommy.Peg()
     }
 }
 
@@ -34,11 +32,5 @@ class Metal {
         self._shaderLib = ShaderLibrary()
         self._pipeDescLib = PipelineDescriptorLibrary()
         self._pipeStateLib = PipeStateLibrary()
-    }
-}
-
-class Mommy {
-    public static func Peg() {
-        
     }
 }

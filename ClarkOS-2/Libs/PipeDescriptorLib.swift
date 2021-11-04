@@ -20,7 +20,7 @@ class PipelineDescriptorLibrary: Library {
     }
 }
 
-public class BasicPD: RPD {
+class BasicPD: RPD {
     var pipeD: MTLRenderPipelineDescriptor!
     
     init() {

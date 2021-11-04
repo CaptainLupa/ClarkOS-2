@@ -21,7 +21,7 @@ class VertexDescriptorLibrary: Library {
     }
 }
 
-public class BasicVD: VDClass {
+class BasicVD: VDClass {
     var name = "Basic Vertex Descriptor"
     
     var vertexDescriptor: MTLVertexDescriptor!

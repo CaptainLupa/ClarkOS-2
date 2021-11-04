@@ -22,9 +22,15 @@ extension Measurable {
 
 public typealias float3 = simd_float3
 public typealias float4 = simd_float4
+public typealias quaternion = simd_quatd
+public typealias quaternionS = simd_quatf
 
 extension float3: Measurable { }
 extension float4: Measurable { }
+extension quaternion: Measurable { }
+extension quaternionS: Measurable { }
+
+extension UInt32: Measurable { }
 
 struct Vertex: Measurable {
     var position: float3

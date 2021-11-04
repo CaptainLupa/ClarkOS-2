@@ -8,11 +8,15 @@ class MainView: MTKView {
         
         self.device = MTLCreateSystemDefaultDevice()
         
+        self.preferredFramesPerSecond = 120
+        
         Nicotine.Smoke(device!)
         
         self.colorPixelFormat = .bgra8Unorm
         
-        self.clearColor = MTLClearColor(red: 0.25, green: 0.57, blue: 0.39, alpha: 1)
+        Stuff.changeClearColor(.blue)
+        
+        self.clearColor = Stuff.clearColor!
         
         rendyboy = Renderer()
         

@@ -20,7 +20,7 @@ class PipeStateLibrary: Library {
     }
 }
 
-public class BasicPS: PS {
+class BasicPS: PS {
     var pipeS: MTLRenderPipelineState!
     
     init() {
