@@ -4,6 +4,7 @@ enum PDTypes {
     case Basic
 }
 
+/// Render Pipeline Descriptor Protocol
 protocol RPD {
     var pipeD: MTLRenderPipelineDescriptor! { get }
 }

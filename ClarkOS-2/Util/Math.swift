@@ -36,6 +36,10 @@ extension UInt32: Measurable { }
 
 extension matrix_float4x4: Measurable { }
 
+func toRadians(_ degrees: Float) -> Float {
+    return degrees * .pi / 180
+}
+
 // Fancy matrix extensions
 
 extension matrix_float4x4 {
@@ -64,4 +68,29 @@ extension matrix_float4x4 {
         
         self = matrix_multiply(self, result)
     }
+    
+    mutating func rotate(_ angle: Float, _ axis: float3, _ pQuat: quaternion) {
+        let newQ = quaternion(vector: float4(axis, cos(angle / 2)))
+        
+        let newPQ = newQ * pQuat * newQ.conjugate
+        
+        let newVec = float3(newPQ.vector.x, newPQ.vector.y, newPQ.vector.z)
+        
+        var mat = matrix_identity_float4x4
+        
+        mat.columns = (
+            float4(1, 0, 0, 0),
+            float4(0, 1, 0, 0),
+            float4(0, 0, 1, 0),
+            float4(newVec.x, newVec.y, newVec.z, 1)
+        )
+        
+        self = matrix_multiply(self, mat)
+    }
+    
+    /// vec is the vector to be rotated around quaternion
+   // mutating func rotate(_ quat: quaternion, _ vec: float3) {
+        //let nQuat = simd_normalize(quat)
+        //let rotatedVec = nQuat.act(vec)
+   // }
 }

@@ -4,6 +4,7 @@ enum PSTypes {
     case Basic
 }
 
+/// Render Pipeline State Protocol
 protocol PS {
     var pipeS: MTLRenderPipelineState! { get }
 }

@@ -3,6 +3,7 @@ import MetalKit
 struct Vertex: Measurable {
     var position: float3
     var color: float4
+    // TODO: Texture
 }
 
 struct ModelMat: Measurable {

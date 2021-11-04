@@ -8,7 +8,7 @@ class Renderer: NSObject, MTKViewDelegate {
     
     override init() {
         super.init()
-        object.setScale(float3(repeating: 0.5))
+        //object.setScale(float3(repeating: 0.7))
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {  }
@@ -22,11 +22,11 @@ class Renderer: NSObject, MTKViewDelegate {
         
         AppTime.updateTime(1 / Float(view.preferredFramesPerSecond))
         
-        if object.getPosX() > 0.5 || object.getPosX() < -0.75 {
+        if object.getPosX() > 1 - object.getScaleX() / 2 || object.getPosX() < -1 + object.getScaleX() / 2 {
             self.x = -self.x
         }
-        
-        if object.getPosY() > 0.75 || object.getPosY() < -0.75 {
+
+        if object.getPosY() > 1 - object.getScaleY() / 2 || object.getPosY() < -1 + object.getScaleY() / 2 {
             self.y = -self.y
         }
         

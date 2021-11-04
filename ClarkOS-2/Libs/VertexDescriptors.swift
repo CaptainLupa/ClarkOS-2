@@ -39,6 +39,8 @@ class BasicVD: VDClass {
         vertexDescriptor.attributes[1].bufferIndex = 0
         vertexDescriptor.attributes[1].offset = float3.size
         
+        // TODO: Textures
+        
         vertexDescriptor.layouts[0].stride = Vertex.stride
     }
 }
