@@ -1,17 +1,29 @@
 import MetalKit
 
 class Renderer: NSObject, MTKViewDelegate {
-    var object = Player()
-    
-    var x: Float = 1
-    var y: Float = -0.6
-    
-    override init() {
-        super.init()
-        //object.setScale(float3(repeating: 0.7))
+    public static var screenSize: simd_float2 = simd_float2(repeating: 0)
+    public static var aspectRatio: Float {
+        return screenSize.x / screenSize.y
     }
     
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {  }
+    var scene: Scene!
+    
+    init(_ mView: MTKView) {
+        super.init()
+        updateScreenSize(mView)
+        //object.setScale(float3(repeating: 0.7))
+        self.scene = Scene()
+        scene.addObject(Player(Cube()))
+        scene.activeCamera.setZ(-3)
+    }
+    
+    func updateScreenSize(_ view: MTKView) {
+        Renderer.screenSize = simd_float2(Float(view.bounds.width), Float(view.bounds.height))
+    }
+    
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        updateScreenSize(view)
+    }
     
     func draw(in view: MTKView) {
         
@@ -22,18 +34,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         AppTime.updateTime(1 / Float(view.preferredFramesPerSecond))
         
-        if object.getPosX() > 1 - object.getScaleX() / 2 || object.getPosX() < -1 + object.getScaleX() / 2 {
-            self.x = -self.x
-        }
-
-        if object.getPosY() > 1 - object.getScaleY() / 2 || object.getPosY() < -1 + object.getScaleY() / 2 {
-            self.y = -self.y
-        }
-        
-        object.moveX(self.x * AppTime.DeltaTime)
-        object.moveY(self.y * AppTime.DeltaTime)
-
-        object.draw(commandEncoder!)
+        scene.drawScene(commandEncoder!)
         
         commandEncoder?.endEncoding()
         commandBuffer?.present(drawable)

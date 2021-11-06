@@ -8,29 +8,28 @@ public let ZAXIS = float3(0, 0, 1)
 
 class Object {
     var drawable: ClarkDrawable!
-    private var _position: float3 = float3(0, 0, 0)
     
-    private var _eulerAnges: float3 = float3(0, 0, 45)
-    
-    private var _positionQuat: quaternion {
-        return quaternion(vector: float4(_position, 0))
+    // Default Positions, rotations, etc...
+    private var _position = float3(0, 0, 0)
+    private var _rotation: Float = 0.0
+    private var _rotationAxis = float3(0, 0, 0)
+    private var _orientation: quaternion {
+        quaternion(angle: _rotation.toRadians, axis: _rotationAxis)
     }
-    
-    private var _scale: float3 = float3(1, 1, 1)
+    private var _scale = float3(1, 1, 1)
     
     var modMat: ModelMat!
     
-    var modelMatrix: matrix_float4x4 {
+    var modelMatrix: float4x4 {
         var modelMatrix = matrix_identity_float4x4
-        //modelMatrix.translate(float3(0, 0, 0))
-        
-        modelMatrix.rotate(toRadians(_eulerAnges.z), ZAXIS, _positionQuat)
-        
-        modelMatrix.translate(_position)
         
         modelMatrix.scale(_scale)
         
-        return matrix_multiply(matrix_identity_float4x4, modelMatrix)
+        modelMatrix.rotate(_orientation)
+        
+        modelMatrix.translate(_position)
+        
+        return modelMatrix
     }
     
     // Override in derived classes
@@ -38,31 +37,8 @@ class Object {
     
     func draw(_ rce: MTLRenderCommandEncoder) {
         update()
-        rce.setVertexBytes(&modMat, length: ModelMat.stride, index: 1)
-        //rce.setVertexBytes(&proj, length: ViewMats.stride, index: 2)
+        rce.setVertexBytes(&modMat, length: ModelMat.stride, index: 2)
         self.drawable.render(rce)
-    }
-}
-
-// Player updates its own modelMat, I think... damn lol
-class Player: Object {
-    
-    init(_ cd: ClarkDrawable = Quad()) {
-        super.init()
-        
-        self.modMat = ModelMat()
-        
-        self.drawable = cd
-        
-        
-    }
-    
-    func updateModMat() {
-        modMat.modelMatrix = self.modelMatrix
-    }
-    
-    override func update() {
-        updateModMat()
     }
 }
 
@@ -83,7 +59,16 @@ extension Object {
     func getPosZ() -> Float { return _position.z }
     func getPos() -> float3 { return _position }
     
-    // TODO: Rotation
+    // Rotation
+    func rotate(_ angle: Float, on axis: float3) {
+        _rotationAxis = axis
+        _rotation += angle
+    }
+    func setRotation(_ angle: Float, on axis: float3) {
+        _rotationAxis = axis
+        _rotation = angle
+    }
+    
     
     // Scale
     func setScaleX(_ x: Float) { _scale.x = x }

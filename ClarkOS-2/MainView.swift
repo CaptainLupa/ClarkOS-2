@@ -18,7 +18,7 @@ class MainView: MTKView {
         
         self.clearColor = Stuff.clearColor!
         
-        rendyboy = Renderer()
+        rendyboy = Renderer(self)
         
         self.delegate = rendyboy
     }

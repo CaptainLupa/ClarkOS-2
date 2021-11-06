@@ -3,10 +3,11 @@
 using namespace metal;
 
 vertex RastData vertexShader(const VertexIn vIn [[stage_in]],
-                             constant ModelMat &modelMatrix [[buffer(1)]]) {
+                             constant CameraMats &cameraMats [[buffer(1)]],
+                             constant ModelMat &modelMatrix [[buffer(2)]]) {
     RastData rd;
     
-    rd.position = modelMatrix.modelMatrix * float4(vIn.position, 1.0);
+    rd.position = cameraMats.projectionMatrix * cameraMats.viewMatrix * modelMatrix.modelMatrix * float4(vIn.position, 1.0);
     //rd.position = float4(vIn.position, 1.0) * modelMatrix.modelMatrix;
     rd.color = vIn.color;
     

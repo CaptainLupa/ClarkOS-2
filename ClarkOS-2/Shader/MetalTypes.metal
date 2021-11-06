@@ -14,3 +14,8 @@ struct RastData {
 struct ModelMat {
     float4x4 modelMatrix;
 };
+
+struct CameraMats {
+    float4x4 viewMatrix;
+    float4x4 projectionMatrix;
+};

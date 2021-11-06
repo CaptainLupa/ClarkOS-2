@@ -34,63 +34,93 @@ extension quaternionD: Measurable { }
 
 extension UInt32: Measurable { }
 
-extension matrix_float4x4: Measurable { }
+extension float4x4: Measurable { }
 
-func toRadians(_ degrees: Float) -> Float {
-    return degrees * .pi / 180
+extension Float {
+    var toRadians: Float {
+        return self * .pi / 180
+    }
+    
+    var toDegrees: Float {
+        return self * 180 / .pi
+    }
 }
 
 // Fancy matrix extensions
 
-extension matrix_float4x4 {
+
+
+
+extension float4x4 {
+    func makeTranslationMatrix(_ x: Float, _ y: Float, _ z: Float) -> float4x4 {
+        let rows = [
+            float4(1, 0, 0, x),
+            float4(0, 1, 0, y),
+            float4(0, 0, 1, z),
+            float4(0, 0, 0, 1)
+        ]
+        
+        return float4x4(rows: rows)
+    }
+    
+    func makeScaleMatrix(_ x: Float, _ y: Float, _ z: Float) -> float4x4 {
+        let rows = [
+            float4(x, 0, 0, 0),
+            float4(0, y, 0, 0),
+            float4(0, 0, z, 0),
+            float4(0, 0, 0, 1)
+        ]
+        
+        return float4x4(rows)
+    }
+    
     mutating func translate(_ v: float3) {
-        var result = matrix_identity_float4x4
+        let result = makeTranslationMatrix(v.x, v.y, v.z)
         
-        result.columns = (
-            float4(1, 0, 0, 0),
-            float4(0, 1, 0, 0),
-            float4(0, 0, 1, 0),
-            float4(v.x, v.y, v.z, 1)
-        )
-        
-        self = matrix_multiply(self, result)
+        self = result * self
     }
     
     mutating func scale(_ v: float3) {
+        let result = makeScaleMatrix(v.x, v.y, v.z)
+        
+        self = result * self
+    }
+    
+    mutating func rotate(_ quat: quaternion) {
+        let normalQuat = simd_normalize(quat)
+        let quatMatrix = float4x4(normalQuat)
+        self = quatMatrix * self
+    }
+    
+    static func prespective(degreesFov: Float, aspectRatio: Float, near: Float, far: Float) -> float4x4 {
+        let fov = degreesFov.toRadians
+        
+        let t: Float = tan(fov / 2)
+        
+        let x: Float = 1 / (aspectRatio * t)
+        let y: Float = 1 / t
+        let z: Float = -((far + near) / (far - near))
+        let w: Float = -((2 * far * near) / far - near)
+        
         var result = matrix_identity_float4x4
         
         result.columns = (
-            float4(v.x, 0, 0, 0),
-            float4(0, v.y, 0, 0),
-            float4(0, 0, v.z, 0),
-            float4(0, 0, 0, 1)
+            float4(x,  0,  0,  0),
+            float4(0,  y,  0,  0),
+            float4(0,  0,  z, -1),
+            float4(0,  0,  w,  0)
         )
         
-        self = matrix_multiply(self, result)
+        return result
     }
     
-    mutating func rotate(_ angle: Float, _ axis: float3, _ pQuat: quaternion) {
-        let newQ = quaternion(vector: float4(axis, cos(angle / 2)))
+    func Orthographic(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> float4x4 {
         
-        let newPQ = newQ * pQuat * newQ.conjugate
-        
-        let newVec = float3(newPQ.vector.x, newPQ.vector.y, newPQ.vector.z)
-        
-        var mat = matrix_identity_float4x4
-        
-        mat.columns = (
-            float4(1, 0, 0, 0),
-            float4(0, 1, 0, 0),
-            float4(0, 0, 1, 0),
-            float4(newVec.x, newVec.y, newVec.z, 1)
+        return float4x4(
+            float4(2 / (right - left), 0, 0, 0),
+            float4(0, 2 / (top - bottom), 0, 0),
+            float4(0, 0, 1 / (far - near),   0),
+            float4((left + right) / (left - right), (top + bottom) / (bottom - top), near / (near - far), 1)
         )
-        
-        self = matrix_multiply(self, mat)
     }
-    
-    /// vec is the vector to be rotated around quaternion
-   // mutating func rotate(_ quat: quaternion, _ vec: float3) {
-        //let nQuat = simd_normalize(quat)
-        //let rotatedVec = nQuat.act(vec)
-   // }
 }
