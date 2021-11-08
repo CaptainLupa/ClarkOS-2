@@ -5,31 +5,34 @@ public let XAXIS = float3(1, 0, 0)
 public let YAXIS = float3(0, 1, 0)
 public let ZAXIS = float3(0, 0, 1)
 
-
 class Object {
     var drawable: ClarkDrawable!
     
     // Default Positions, rotations, etc...
     private var _position = float3(0, 0, 0)
-    private var _rotation: Float = 0.0
-    private var _rotationAxis = float3(0, 0, 0)
-    private var _orientation: quaternion {
-        quaternion(angle: _rotation.toRadians, axis: _rotationAxis)
-    }
+    private var _orientations = float3(0, 0, 0) // x y z angles
     private var _scale = float3(1, 1, 1)
     
+    var children: [Object] = []
+    
     var modMat: ModelMat!
+    
+    // Default parent so the parent doesn't get moved around.
+    var parentModelMatrix: float4x4 = matrix_identity_float4x4
     
     var modelMatrix: float4x4 {
         var modelMatrix = matrix_identity_float4x4
         
         modelMatrix.scale(_scale)
         
-        modelMatrix.rotate(_orientation)
+        
+        _position.rotate(_orientations.x, XAXIS)
+        _position.rotate(_orientations.y, YAXIS)
+        _position.rotate(_orientations.z, ZAXIS)
         
         modelMatrix.translate(_position)
         
-        return modelMatrix
+        return parentModelMatrix * modelMatrix
     }
     
     // Override in derived classes
@@ -37,6 +40,12 @@ class Object {
     
     func draw(_ rce: MTLRenderCommandEncoder) {
         update()
+        
+        for child in children {
+            child.parentModelMatrix = self.modelMatrix
+            child.update()
+        }
+        
         rce.setVertexBytes(&modMat, length: ModelMat.stride, index: 2)
         self.drawable.render(rce)
     }
@@ -60,15 +69,20 @@ extension Object {
     func getPos() -> float3 { return _position }
     
     // Rotation
-    func rotate(_ angle: Float, on axis: float3) {
-        _rotationAxis = axis
-        _rotation += angle
-    }
-    func setRotation(_ angle: Float, on axis: float3) {
-        _rotationAxis = axis
-        _rotation = angle
-    }
+    func rotateX(_ x: Float) { _orientations.x += x }
+    func rotateY(_ y: Float) { _orientations.y += y }
+    func rotateZ(_ z: Float) { _orientations.z += z }
+    func rotate(_ xyz: float3) { _orientations += xyz }
     
+    func setRotationX(_ x: Float) { _orientations.x = x }
+    func setRotationY(_ y: Float) { _orientations.y = y }
+    func setRotationZ(_ z: Float) { _orientations.z = z }
+    func setRotation(_ xyz: float3) { _orientations = xyz }
+    
+    func getRotationX() -> Float { return _orientations.x }
+    func getRotationY() -> Float { return _orientations.y }
+    func getRotationZ() -> Float { return _orientations.z }
+    func getRotation() -> float3 { return _orientations }
     
     // Scale
     func setScaleX(_ x: Float) { _scale.x = x }

@@ -48,7 +48,30 @@ extension Float {
 
 // Fancy matrix extensions
 
-
+extension float3 {
+    mutating func rotate(_ angle: Float, _ axis: float3) {
+        let quat = quaternion(angle: angle, axis: axis)
+        
+        let quatConj = quat.conjugate
+        
+        let qv = quatMultiply(quatConj, self)
+        
+        let rotated = qv * quat
+        
+        self = float3(rotated.vector.x, rotated.vector.y, rotated.vector.z)
+    }
+    
+    func quatMultiply(_ q: quaternion, _ v: float3) -> quaternion {
+        let w: Float = -(q.vector.x * v.x) - (q.vector.y * v.y) - (q.vector.z * v.z)
+        let x: Float =  (q.vector.w * v.x) + (q.vector.y * v.z) - (q.vector.z * v.y)
+        let y: Float =  (q.vector.w * v.y) + (q.vector.z * v.x) - (q.vector.x * v.z)
+        let z: Float =  (q.vector.w * v.z) + (q.vector.x * v.y) - (q.vector.y * v.x)
+        
+        let newQ = quaternion(vector: float4(x, y, z, w))
+        
+        return newQ
+    }
+}
 
 
 extension float4x4 {
@@ -84,12 +107,6 @@ extension float4x4 {
         let result = makeScaleMatrix(v.x, v.y, v.z)
         
         self = result * self
-    }
-    
-    mutating func rotate(_ quat: quaternion) {
-        let normalQuat = simd_normalize(quat)
-        let quatMatrix = float4x4(normalQuat)
-        self = quatMatrix * self
     }
     
     static func prespective(degreesFov: Float, aspectRatio: Float, near: Float, far: Float) -> float4x4 {

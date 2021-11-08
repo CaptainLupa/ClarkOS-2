@@ -37,10 +37,10 @@ class Cube: Polygon, ClarkDrawable {
     func makeVerts() {
         verts = [
             // Front
-            Vertex(position: float3(-0.5,  0.5,  0.0), color: float4(1, 0, 0, 1)), // 0
-            Vertex(position: float3(-0.5, -0.5,  0.0), color: float4(0, 1, 0, 1)), // 1
-            Vertex(position: float3( 0.5, -0.5,  0.0), color: float4(0, 0, 1, 1)), // 2
-            Vertex(position: float3( 0.5,  0.5,  0.0), color: float4(1, 1, 0, 1)), // 3, top right
+            Vertex(position: float3(-0.5,  0.5,  0.5), color: float4(1, 0, 0, 1)), // 0
+            Vertex(position: float3(-0.5, -0.5,  0.5), color: float4(0, 1, 0, 1)), // 1
+            Vertex(position: float3( 0.5, -0.5,  0.5), color: float4(0, 0, 1, 1)), // 2
+            Vertex(position: float3( 0.5,  0.5,  0.5), color: float4(1, 1, 0, 1)), // 3, top right
             // Right, uses 3 as its start
             Vertex(position: float3( 0.5,  0.5, -0.5), color: float4(0, 1, 0, 1)), // 4
             Vertex(position: float3( 0.5, -0.5, -0.5), color: float4(0, 0, 1, 1)), // 5

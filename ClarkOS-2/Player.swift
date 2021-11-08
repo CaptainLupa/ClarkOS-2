@@ -15,6 +15,7 @@ class Player: Object {
     }
     
     override func update() {
+        
         updateMat()
     }
 }
