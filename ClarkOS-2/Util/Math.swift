@@ -109,6 +109,14 @@ extension float4x4 {
         self = result * self
     }
     
+    mutating func quatRotate(_ angle: Float, _ axis: float3) {
+        let q = quaternion(angle: angle.toRadians, axis: axis)
+        
+        let qMat = float4x4(q.normalized)
+        
+        self = qMat * self
+    }
+    
     mutating func rotate(_ angle: Float, _ axis: float3) {//God why
         //var result = matrix_identity_float4x4
         
@@ -168,12 +176,40 @@ extension float4x4 {
     }
     
     func Orthographic(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> float4x4 {
-        
         return float4x4(
             float4(2 / (right - left), 0, 0, 0),
             float4(0, 2 / (top - bottom), 0, 0),
-            float4(0, 0, 1 / (far - near),   0),
+            float4(0, 0, -2 / (far - near),   0),
             float4((left + right) / (left - right), (top + bottom) / (bottom - top), near / (near - far), 1)
         )
     }
+}
+
+// Quaternion helper funcs
+extension quaternion {
+//    func rotationBetweenVecs(_ start: float3, _ dest: float3) -> quaternion {
+//        var v1 = simd_normalize(start)
+//        var v2 = simd_normalize(dest)
+//
+//        var cosTheta = dot(v1, v2)
+//        var rotAxis: float3
+//
+//        if cosTheta < (-1 + 0.001) {
+//            rotAxis = cross(float3(0, 0, 1), v1)
+//
+//            if simd_length(rotAxis) < 0.01 {
+//                rotAxis = cross(float3(1, 0, 0), v1)
+//            }
+//
+//            rotAxis = simd_normalize(rotAxis)
+//            let jeff: Float = 180
+//            return quaternion(angle: jeff.toRadians, axis: rotAxis)
+//        }
+//
+//        rotAxis = cross(v1, v2)
+//        let s: Float = sqrtf((1+cosTheta)*2)
+//        let invs: Float = 1 / 2
+//
+//        return
+//    }
 }
