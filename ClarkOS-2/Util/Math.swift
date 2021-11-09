@@ -50,7 +50,7 @@ extension Float {
 
 extension float3 {
     mutating func rotate(_ angle: Float, _ axis: float3) {
-        let quat = quaternion(angle: angle, axis: axis)
+        let quat = quaternion(angle: angle.toRadians, axis: axis)
         
         let quatConj = quat.conjugate
         
@@ -105,6 +105,42 @@ extension float4x4 {
     
     mutating func scale(_ v: float3) {
         let result = makeScaleMatrix(v.x, v.y, v.z)
+        
+        self = result * self
+    }
+    
+    mutating func rotate(_ angle: Float, _ axis: float3) {//God why
+        //var result = matrix_identity_float4x4
+        
+        let x: Float = axis.x
+        let y: Float = axis.y
+        let z: Float = axis.z
+        
+        let c: Float = cos(angle)
+        let s: Float = sin(angle)
+        
+        let mc: Float = (1 - c)
+        
+        let r1c1: Float = x * x * mc + c
+        let r2c1: Float = x * y * mc + z * s
+        let r3c1: Float = x * z * mc - y * s
+        
+        let r1c2: Float = y * x * mc - z * s
+        let r2c2: Float = y * y * mc + c
+        let r3c2: Float = y * z * mc + x * s
+        
+        let r1c3: Float = z * x * mc + y * s
+        let r2c3: Float = z * y * mc - x * s
+        let r3c3: Float = z * z * mc + c
+        
+        let rows = [
+            float4(r1c1, r1c2, r1c3, 0),
+            float4(r2c1, r2c2, r2c3, 0),
+            float4(r3c1, r3c2, r3c3, 0),
+            float4(   0,    0,    0, 1)
+        ]
+        
+        let result = float4x4(rows: rows)
         
         self = result * self
     }

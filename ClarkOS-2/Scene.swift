@@ -1,25 +1,33 @@
 import MetalKit
 
 class Scene {
-    var objects: [Object] = []
-    var cameras: [Camera] = [Camera()]
+    var _objects: [Object] = []
+    var _cameras: [Camera] = [Camera()]
     
     var activeCamera: Camera!
     
     init() {
-        self.activeCamera = self.cameras[0]
+        self.activeCamera = _cameras[0]
     }
     
     func addObject(_ obj: Object) {
-        objects.append(obj)
+        _objects.append(obj)
     }
     
     func addCamera(_ cam: Camera) {
-        cameras.append(cam)
+        _cameras.append(cam)
+    }
+    
+    func removeCamera(_ index: Int) {
+        _cameras.remove(at: index)
+    }
+    
+    func setActiveCamera(_ index: Int) {
+        activeCamera = _cameras[index]
     }
     
     private func update() {
-        for cam in cameras {
+        for cam in _cameras {
             cam.update()
         }
     }
@@ -29,7 +37,7 @@ class Scene {
         
         rce.setVertexBytes(&activeCamera.camMat, length: CameraMats.stride, index: 1)
         
-        for obj in objects {
+        for obj in _objects {
             obj.draw(rce)
         }
     }

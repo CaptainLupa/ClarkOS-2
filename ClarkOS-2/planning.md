@@ -1,11 +1,12 @@
 # Planning file
 
 # Scene
-    ## Each scene instance has array of cameras
-        ## Each camera has its own view matrix for positioning it in the world.
-        ## Projection matrix is global since it will not change much.
-            ### Zoom function for cameras??
-            ### Maybe figure that out.
+
+## Each scene instance has array of cameras
+    ## Each camera has its own view matrix for positioning it in the world.
+    ## Projection matrix is global since it will not change much.
+        ### Zoom function for cameras??
+        ### Maybe figure that out.
     
 # Object Layout
     ## Each object has a model matrix, and can have children of type object.

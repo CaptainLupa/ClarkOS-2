@@ -25,10 +25,9 @@ class Object {
         
         modelMatrix.scale(_scale)
         
-        
-        _position.rotate(_orientations.x, XAXIS)
-        _position.rotate(_orientations.y, YAXIS)
-        _position.rotate(_orientations.z, ZAXIS)
+        modelMatrix.rotate(_orientations.x, XAXIS)
+        modelMatrix.rotate(_orientations.y, YAXIS)
+        modelMatrix.rotate(_orientations.z, ZAXIS)
         
         modelMatrix.translate(_position)
         

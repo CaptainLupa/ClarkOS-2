@@ -11,10 +11,14 @@ class Renderer: NSObject, MTKViewDelegate {
     init(_ mView: MTKView) {
         super.init()
         updateScreenSize(mView)
-        //object.setScale(float3(repeating: 0.7))
         self.scene = Scene()
-        scene.addObject(Player(Cube()))
-        scene.activeCamera.setZ(-3)
+        scene.removeCamera(0)
+        scene.addCamera(Camera())
+        scene.setActiveCamera(0)
+        scene.addObject(Player(Cube(), false))
+        scene.addObject(Player(Cube(), false))
+        scene._objects[1].setX(5)
+        scene.activeCamera.setZ(3)
     }
     
     func updateScreenSize(_ view: MTKView) {
